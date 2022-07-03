@@ -5,7 +5,9 @@ const bodyParser = require("body-parser");
 const mongoose=require('mongoose')
 // const date = require(__dirname + "/date.js");
 const _=require('lodash')
-
+mongoose.connect("mongodb+srv://Ashita:test123@cluster0.gsawi.mongodb.net/todolistDB",{useNewUrlParser:true},function(err){
+  console.log("connected to db");
+});
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -13,7 +15,7 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
-mongoose.connect("mongodb+srv://Ashita:test123@cluster0.gsawi.mongodb.net/todolistDB",{useNewUrlParser:true})
+
 
 const itemsSchema=new mongoose.Schema({
   name:String
@@ -63,7 +65,7 @@ Item.find({},function(err,foundItems){
 
 });
 
-app.post("/", function(req, res){
+app.post("/",async function(req, res){
 
   const item = req.body.newItem;
   const listName=req.body.list;
@@ -75,7 +77,7 @@ app.post("/", function(req, res){
  
 
   if(listName==="Today"){
-    itemName.save();
+    await itemName.save();
     res.redirect("/");
   }else{
     List.findOne({name:listName},function(err,foundList){
